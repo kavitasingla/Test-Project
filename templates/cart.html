@@ -1,0 +1,151 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="UTF-8">
+    <title>Shopping Cart for {{users.name}}</title>
+    <!-- Bootstrap CSS -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.3/css/all.min.css">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.0/dist/css/bootstrap.min.css">
+    <!-- Custom CSS -->
+    <style>
+      body {
+        background-color: #f8f9fa;
+      }
+      
+      .navbar {
+        background-color: #343a40;
+      }
+      
+      .navbar-brand, .navbar-text {
+        color: #fff !important;
+      }
+      
+      #prods {
+        margin-top: 20px;
+        margin-bottom: 70px;
+      }
+      
+      .card {
+        border-radius: 10px;
+        box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+      }
+      
+      .card-header {
+        background-color: #343a40;
+        color: #fff;
+        border-radius: 10px 10px 0 0;
+      }
+      
+      .cart-icon {
+        color: #343a40;
+      }
+      
+      .remove-item, .add-quantity, .remove-quantity {
+        color: #FF0000.;
+      }
+      
+      .remove-item:hover, .add-quantity:hover, .remove-quantity:hover {
+        color: #dc3545;
+      }
+      
+      .checkout-btn {
+        background-color: ##007bff;
+        border-color: #343a40;
+      }
+      
+      .checkout-btn:hover {
+        background-color: #007bff;
+        border-color: #212529;
+      }
+    </style>
+  </head>
+  <body>
+    {% include "navigation.html"%}
+    
+    <div class="container">
+      <div class="row">
+        <div class="col-md-8">
+          <h2>Your Shopping Cart</h2>
+          <div id="prods">
+            {% for order in orders %}
+            <div class="card mb-3">
+              <div class="card-header">
+                <span class="cart-icon"><i class="fas fa-shopping-cart me-2"></i></span>
+                {{ order['product'] }}
+              </div>
+			  <div class="card-body">
+                <div class="row">
+                  <div class="col-md-8">
+                    <p class="card-text">{{ order['description'] }}</p>
+                    <p class="card-text"><small class="text-muted" ><strong>Price: €{{ order['price'] }}</strong></small></p>
+                    <div class="row align-items-center">
+                      <div class="col-md-4">
+              
+           
+                          <div class="input-group">
+						  <form action="/home/{{users.customer_id}}/cart" method="post">
+						  <input type="hidden" name="added" value="{{ order['product'] }}">
+                            <button class="btn btn-outline-secondary remove-quantity" type="submit">+</button>
+							</form>
+							<input type="number" class="form-control text-center" value="{{ order['quantity'] }}" name="quantity" min="1" readonly>
+                            <form action="/home/{{users.customer_id}}/cart" method="post">
+							<input type="hidden" name="removed" value="{{ order['product'] }}">
+							<button class="btn btn-outline-secondary add-quantity" type="submit">-</button>
+							</form>
+                          </div>
+                      </div>
+                      <div class="col-md-4">
+                        <form action="/home/{{users.customer_id}}/cart" method="post">
+                        
+							<input type="hidden" name="deleted" value="{{ order['product'] }}">
+                          <button class="btn btn-outline-secondary remove-item bg-color="red" type="submit"><i class="fas fa-trash"></i></button>
+                        </form>
+                      </div>
+                      <div class="col-md-4 text-end">
+                        <p class="card-text"><strong>Total: €{{ order['quantity']* order['price'] }}</strong></p>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            {% endfor %}
+          </div>
+        </div>
+        <div class="col-md-4">
+          <h2>Cart Summary</h2>
+          <div class="card">
+            <div class="card-body">
+              <table class="table">
+                <tbody>
+                  <tr>
+                    <td>Subtotal:</td>
+                    <td class="text-end">€{{ subtotal}}</td>
+                  </tr>
+                  <tr>
+                    <td>Tax:</td>
+                    <td class="text-end">€0</td>
+                  </tr>
+                  <tr>
+                    <td>Total:</td>
+                    <td class="text-end">€{{subtotal }}</td>
+                  </tr>
+                </tbody>
+              </table>
+              <form action="/home/checkout" method="POST">
+			  <input type="hidden" name="cid" value="{{ users.customer_id }}">
+                <button type="submit" class="btn btn-lg btn-block checkout-btn">Checkout</button>
+              </form>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+<!-- Bootstrap JS -->
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.0/dist/js/bootstrap.bundle.min.js"></script>
+  </body>
+</html>
+
+
+
+
